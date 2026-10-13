@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Google Tasks - Copiar link da tarefa
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
-// @description  Adiciona o item "Copiar link" ao menu de opções (três pontos) de cada tarefa no Google Tarefas embutido no Gmail.
+// @version      1.1.1
+// @description  Adiciona "Copiar link" ao menu de cada tarefa do Google Tarefas embutido no Gmail (link tasks.google.com/tasks/?sa=6&taskId=ID) e localiza a tarefa quando o embed é aberto com &taskId=ID.
 // @author       luascfl
 // @match        https://tasks.google.com/embed/list/*
 // @icon         https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Google_Tasks_2021.svg/2159px-Google_Tasks_2021.svg.png
@@ -37,7 +37,7 @@
     let pendingTaskId = null;
     let pendingButton = null;
 
-    const taskLink = id => `https://tasks.google.com/task/${encodeURIComponent(id)}`;
+    const taskLink = id => `https://tasks.google.com/tasks/?sa=6&taskId=${encodeURIComponent(id)}`;
 
     // --- Quem abriu o menu? ---------------------------------------------------
     function rememberTask(event) {
@@ -176,4 +176,29 @@
     new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
     scan();
     console.log(LOG, 'ativo');
+
+    // --- Abrir o embed já na tarefa: ...embed/list/~default?origin=...&taskId=ID ---
+    function revealTask(id) {
+        const find = () => [...document.querySelectorAll(ROW_SELECTOR)].find(r => r.dataset.id === id);
+        const show = row => {
+            row.scrollIntoView({ block: 'center' });
+            const prev = row.style.boxShadow;
+            row.style.boxShadow = 'inset 0 0 0 2px #1a73e8';
+            setTimeout(() => { row.style.boxShadow = prev; }, 3000);
+            console.log(LOG, 'tarefa localizada pelo link', id);
+        };
+        const now = find();
+        if (now) return show(now);
+        const observer = new MutationObserver(() => {
+            const row = find();
+            if (row) { observer.disconnect(); clearTimeout(giveUp); show(row); }
+        });
+        const giveUp = setTimeout(() => {
+            observer.disconnect();
+            console.warn(LOG, 'tarefa do link não encontrada nesta lista', id);
+        }, 15000);
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+    const linkedTaskId = new URLSearchParams(location.search).get('taskId');
+    if (linkedTaskId) revealTask(linkedTaskId);
 })();

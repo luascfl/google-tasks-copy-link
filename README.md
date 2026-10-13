@@ -4,7 +4,15 @@ Userscript que adiciona o item **Copiar link** ao menu de opções (três pontos
 
 `https://tasks.google.com/embed/list/~default?origin=https%3A%2F%2Fmail.google.com`
 
-O item aparece entre "Adicionar anexo" e "Excluir". Ao clicar, copia `https://tasks.google.com/task/<id>` para a área de transferência, mostra o aviso "Link copiado" e fecha o menu. O link abre a tarefa no Google Tarefas completo (`https://tasks.google.com/tasks/?taskId=<id>`).
+O item aparece entre "Adicionar anexo" e "Excluir". Ao clicar, copia `https://tasks.google.com/tasks/?sa=6&taskId=<id>` para a área de transferência, mostra o aviso "Link copiado" e fecha o menu. Esse link abre a tarefa no Google Tarefas completo.
+
+## Do link completo para o embed
+
+O embed ignora `taskId` por conta própria. O script lê `taskId` da URL do embed, rola até a tarefa e a destaca por 3 segundos. Para converter um link completo, troque `https://tasks.google.com/tasks/?sa=6&taskId=<id>` por:
+
+`https://tasks.google.com/embed/list/~default?origin=https%3A%2F%2Fmail.google.com&taskId=<id>`
+
+Só funciona se a tarefa estiver na lista aberta (Minhas tarefas, por padrão).
 
 ## Instalação
 
