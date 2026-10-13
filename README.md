@@ -12,6 +12,10 @@ O item aparece entre "Adicionar anexo" e "Excluir". Ao clicar, copia para a áre
 
 O embed ignora `taskId` por conta própria. O script lê `taskId` da URL do embed, rola até a tarefa e a destaca por 3 segundos. Por isso o link só funciona em um Chrome com este script instalado, e a tarefa precisa estar na lista aberta (Minhas tarefas, por padrão).
 
+## Links do app completo
+
+Qualquer aba aberta em `https://tasks.google.com/tasks/?sa=6&taskId=<id>` (ou `https://tasks.google.com/task/<id>`) é redirecionada, ainda em `document-start`, para o formato embed acima. Links de `tasks.google.com/tasks/` sem `taskId` continuam abrindo o app normal. A interceptação vale para navegação em `tasks.google.com`; clique em link dentro de outros sites só é interceptado quando a navegação chega a essa URL.
+
 ## Instalação
 
 Instale `google-tasks-copy-link.user.js` no Tampermonkey. O script usa `GM_setClipboard`, então não depende da permissão de área de transferência do iframe do Gmail.
