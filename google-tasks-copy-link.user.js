@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Google Tasks - Copiar link da tarefa
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
-// @description  Adiciona "Copiar link" ao menu de cada tarefa do Google Tarefas embutido no Gmail (link tasks.google.com/tasks/?sa=6&taskId=ID) e localiza a tarefa quando o embed é aberto com &taskId=ID.
+// @version      1.2.0
+// @description  Adiciona "Copiar link" ao menu de cada tarefa do Google Tarefas embutido no Gmail. O link copiado abre o embed já na tarefa (&taskId=ID), que este script localiza e destaca.
 // @author       luascfl
 // @match        https://tasks.google.com/embed/list/*
 // @icon         https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Google_Tasks_2021.svg/2159px-Google_Tasks_2021.svg.png
@@ -37,7 +37,7 @@
     let pendingTaskId = null;
     let pendingButton = null;
 
-    const taskLink = id => `https://tasks.google.com/tasks/?sa=6&taskId=${encodeURIComponent(id)}`;
+    const taskLink = id => `https://tasks.google.com/embed/list/~default?origin=https%3A%2F%2Fmail.google.com&taskId=${encodeURIComponent(id)}`;
 
     // --- Quem abriu o menu? ---------------------------------------------------
     function rememberTask(event) {
